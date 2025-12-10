@@ -29,6 +29,7 @@ class MakeUserCommand extends Command
 
         if (! class_exists($userModel)) {
             $this->components->error("User model [{$userModel}] not found.");
+
             return self::FAILURE;
         }
 
@@ -38,12 +39,14 @@ class MakeUserCommand extends Command
 
         if (! $name || ! $email || ! $password) {
             $this->components->error('Name, email, and password are required.');
+
             return self::FAILURE;
         }
 
         // Check if user already exists
         if ($userModel::where('email', $email)->exists()) {
             $this->components->error("A user with email [{$email}] already exists.");
+
             return self::FAILURE;
         }
 

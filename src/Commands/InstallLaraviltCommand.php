@@ -140,6 +140,7 @@ class InstallLaraviltCommand extends Command
     {
         $this->components->task('Running migrations', function () {
             Artisan::call('migrate', ['--force' => true]);
+
             return true;
         });
     }
@@ -180,11 +181,13 @@ class InstallLaraviltCommand extends Command
 
         $this->components->task('Installing npm dependencies', function () {
             exec('npm install 2>&1', $output, $exitCode);
+
             return $exitCode === 0;
         });
 
         $this->components->task('Building assets', function () {
             exec('npm run build 2>&1', $output, $exitCode);
+
             return $exitCode === 0;
         });
     }
