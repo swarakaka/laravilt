@@ -15,7 +15,7 @@ class LaraviltServiceProvider extends ServiceProvider
     {
         // Merge config
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/laravilt.php',
+            __DIR__.'/../config/laravilt.php',
             'laravilt'
         );
     }
@@ -26,7 +26,7 @@ class LaraviltServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Load translations
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'laravilt');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravilt');
 
         // Register MCP server
         if (class_exists(Mcp::class)) {
@@ -36,7 +36,7 @@ class LaraviltServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             // Publish config
             $this->publishes([
-                __DIR__ . '/../config/laravilt.php' => config_path('laravilt.php'),
+                __DIR__.'/../config/laravilt.php' => config_path('laravilt.php'),
             ], 'laravilt-config');
 
             // Register commands
