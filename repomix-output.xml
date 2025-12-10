@@ -1,0 +1,2190 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: **/*.log, tmp/, .js, .html, .blade.php, .css, public/, vendor/, node_modules, venv/, logs/, electorn-sentinerl/
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/
+  ISSUE_TEMPLATE/
+    bug.yml
+    config.yml
+  workflows/
+    dependabot-auto-merge.yml
+    fix-php-code-styling.yml
+    tests.yml
+  CONTRIBUTING.md
+  dependabot.yml
+  FUNDING.yml
+  SECURITY.md
+config/
+  laravilt.php
+lang/
+  en/
+    laravilt.php
+src/
+  Commands/
+    InstallLaraviltCommand.php
+    MakeUserCommand.php
+  Mcp/
+    Tools/
+      InstallLaraviltTool.php
+      ListPackagesTool.php
+      MakeUserTool.php
+      PackageInfoTool.php
+      SearchDocsTool.php
+    LaraviltServer.php
+  LaraviltPlugin.php
+  LaraviltServiceProvider.php
+tests/
+  Feature/
+    DebugTest.php
+  Pest.php
+  TestCase.php
+.gitignore
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+composer.json
+LICENSE.md
+mcp-server.json
+phpstan.neon
+phpunit.xml
+pint.json
+README.md
+testbench.yaml
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/ISSUE_TEMPLATE/bug.yml">
+name: Bug Report
+description: Report a bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: What version of the package are you using?
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP Version
+      description: What version of PHP are you using?
+    validations:
+      required: true
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel Version
+      description: What version of Laravel are you using?
+    validations:
+      required: true
+</file>
+
+<file path=".github/ISSUE_TEMPLATE/config.yml">
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/laravilt/laravilt/discussions/new?category=q-a
+    about: Ask the community for help
+  - name: Request a feature
+    url: https://github.com/laravilt/laravilt/discussions/new?category=ideas
+    about: Share ideas for new features
+</file>
+
+<file path=".github/workflows/dependabot-auto-merge.yml">
+name: Dependabot Auto-Merge
+
+on: [push, pull_request]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Auto-merge Dependabot PRs for semver-minor updates
+        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-minor'}}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Auto-merge Dependabot PRs for semver-patch updates
+        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+</file>
+
+<file path=".github/CONTRIBUTING.md">
+# Contributing to Laravilt
+
+Thank you for considering contributing to Laravilt!
+
+## Pull Requests
+
+1. Fork the repository
+2. Create a new branch for your feature
+3. Write tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request
+
+## Coding Standards
+
+- Follow PSR-12 coding standards
+- Run `composer format` before committing
+- Write tests for new features
+- Ensure PHPStan passes with level 5
+
+## Running Tests
+
+```bash
+composer test
+```
+
+## Code Style
+
+```bash
+composer format
+```
+
+## Static Analysis
+
+```bash
+composer analyse
+```
+</file>
+
+<file path=".github/dependabot.yml">
+version: 2
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+</file>
+
+<file path=".github/FUNDING.yml">
+github: fadymondy
+</file>
+
+<file path=".github/SECURITY.md">
+# Security Policy
+
+## Reporting a Vulnerability
+
+If you discover a security vulnerability within Laravilt, please send an email to info@3x1.io. All security vulnerabilities will be promptly addressed.
+
+Please do not publicly disclose the issue until it has been addressed by the team.
+</file>
+
+<file path="config/laravilt.php">
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | User Model
+    |--------------------------------------------------------------------------
+    |
+    | The model that should be used for admin users. This model must extend
+    | Illuminate\Foundation\Auth\User and implement the Authenticatable
+    | contract.
+    |
+    */
+    'user_model' => App\Models\User::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Path
+    |--------------------------------------------------------------------------
+    |
+    | The path prefix for all admin panel routes. By default, all routes will
+    | be prefixed with '/admin'.
+    |
+    */
+    'path' => 'admin',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Guard
+    |--------------------------------------------------------------------------
+    |
+    | The authentication guard to use for the admin panel. This should match
+    | one of the guards defined in your auth.php configuration file.
+    |
+    */
+    'guard' => 'web',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Middleware
+    |--------------------------------------------------------------------------
+    |
+    | The middleware stack that will be applied to all admin panel routes.
+    | You can add additional middleware here as needed.
+    |
+    */
+    'middleware' => [
+        'web',
+        'auth',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Locale
+    |--------------------------------------------------------------------------
+    |
+    | The default locale for the admin panel. This will be used when the user
+    | has not set a preferred locale.
+    |
+    */
+    'locale' => 'en',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Available Locales
+    |--------------------------------------------------------------------------
+    |
+    | The locales that are available in the admin panel. Users can switch
+    | between these locales using the language switcher.
+    |
+    */
+    'locales' => [
+        'en' => 'English',
+        'ar' => 'العربية',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Timezone
+    |--------------------------------------------------------------------------
+    |
+    | The default timezone for the admin panel. This will be used when the
+    | user has not set a preferred timezone.
+    |
+    */
+    'timezone' => 'UTC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Brand Name
+    |--------------------------------------------------------------------------
+    |
+    | The name that will be displayed in the admin panel sidebar and header.
+    |
+    */
+    'brand' => env('APP_NAME', 'Laravilt'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logo
+    |--------------------------------------------------------------------------
+    |
+    | The path to the logo image that will be displayed in the admin panel.
+    | Set to null to use the brand name instead.
+    |
+    */
+    'logo' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Favicon
+    |--------------------------------------------------------------------------
+    |
+    | The path to the favicon image for the admin panel.
+    |
+    */
+    'favicon' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dark Mode
+    |--------------------------------------------------------------------------
+    |
+    | Whether dark mode is enabled by default in the admin panel.
+    |
+    */
+    'dark_mode' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Features
+    |--------------------------------------------------------------------------
+    |
+    | Enable or disable various features of the admin panel.
+    |
+    */
+    'features' => [
+        'ai_assistant' => true,
+        'global_search' => true,
+        'notifications' => true,
+        'user_menu' => true,
+        'language_switcher' => true,
+        'theme_switcher' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | AI Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for the AI assistant feature.
+    |
+    */
+    'ai' => [
+        'enabled' => true,
+        'provider' => env('LARAVILT_AI_PROVIDER', 'openai'),
+        'model' => env('LARAVILT_AI_MODEL', 'gpt-4'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pagination
+    |--------------------------------------------------------------------------
+    |
+    | Default pagination settings for tables in the admin panel.
+    |
+    */
+    'pagination' => [
+        'per_page' => 15,
+        'per_page_options' => [10, 15, 25, 50, 100],
+    ],
+];
+</file>
+
+<file path="lang/en/laravilt.php">
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | Laravilt Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used by the Laravilt plugin.
+    | You are free to modify these language lines according to your
+    | application's requirements.
+    |
+    */
+
+    // Add your translation messages here
+];
+</file>
+
+<file path="src/Mcp/Tools/InstallLaraviltTool.php">
+<?php
+
+namespace Laravilt\Laravilt\Mcp\Tools;
+
+use Illuminate\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Tool;
+
+class InstallLaraviltTool extends Tool
+{
+    /**
+     * The tool's description.
+     */
+    protected string $description = 'Install and configure Laravilt admin panel. Publishes configs, runs migrations, and sets up frontend assets.';
+
+    /**
+     * Handle the tool request.
+     */
+    public function handle(Request $request): Response
+    {
+        $force = $request->get('force', false);
+        $skipMigrations = $request->get('skip_migrations', false);
+        $skipNpm = $request->get('skip_npm', true); // Default to skip in MCP context
+
+        $params = [];
+
+        if ($force) {
+            $params['--force'] = true;
+        }
+
+        if ($skipMigrations) {
+            $params['--skip-migrations'] = true;
+        }
+
+        if ($skipNpm) {
+            $params['--skip-npm'] = true;
+        }
+
+        try {
+            Artisan::call('laravilt:install', $params);
+            $output = Artisan::output();
+
+            return Response::text("Laravilt installation completed.\n\n".$output);
+        } catch (\Exception $e) {
+            return Response::text("Installation failed: {$e->getMessage()}");
+        }
+    }
+
+    /**
+     * Get the tool's input schema.
+     *
+     * @return array<string, \Illuminate\JsonSchema\JsonSchema>
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'force' => $schema->boolean('Overwrite existing files')->default(false),
+            'skip_migrations' => $schema->boolean('Skip running database migrations')->default(false),
+            'skip_npm' => $schema->boolean('Skip npm install and build (recommended for MCP)')->default(true),
+        ];
+    }
+}
+</file>
+
+<file path="src/Mcp/Tools/ListPackagesTool.php">
+<?php
+
+namespace Laravilt\Laravilt\Mcp\Tools;
+
+use Illuminate\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\File;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Tool;
+
+class ListPackagesTool extends Tool
+{
+    /**
+     * The tool's description.
+     */
+    protected string $description = 'List all installed Laravilt packages with their versions and descriptions';
+
+    /**
+     * Handle the tool request.
+     */
+    public function handle(Request $request): Response
+    {
+        $packagesPath = base_path('packages/laravilt');
+
+        if (! File::isDirectory($packagesPath)) {
+            return Response::text('No Laravilt packages directory found.');
+        }
+
+        $packages = [];
+        $directories = File::directories($packagesPath);
+
+        foreach ($directories as $dir) {
+            $composerJsonPath = $dir.'/composer.json';
+            if (File::exists($composerJsonPath)) {
+                $composerData = json_decode(File::get($composerJsonPath), true);
+                $packages[] = [
+                    'name' => basename($dir),
+                    'package' => $composerData['name'] ?? 'N/A',
+                    'description' => $composerData['description'] ?? 'N/A',
+                    'version' => $composerData['version'] ?? 'N/A',
+                    'path' => $dir,
+                ];
+            }
+        }
+
+        if (empty($packages)) {
+            return Response::text('No Laravilt packages found.');
+        }
+
+        $output = "# Laravilt Packages\n\n";
+        $output .= 'Found '.count($packages)." package(s):\n\n";
+
+        foreach ($packages as $package) {
+            $output .= "## {$package['name']}\n";
+            $output .= "- **Package:** {$package['package']}\n";
+            $output .= "- **Version:** {$package['version']}\n";
+            $output .= "- **Description:** {$package['description']}\n";
+            $output .= "- **Path:** {$package['path']}\n\n";
+        }
+
+        return Response::text($output);
+    }
+
+    /**
+     * Get the tool's input schema.
+     *
+     * @return array<string, \Illuminate\JsonSchema\JsonSchema>
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [];
+    }
+}
+</file>
+
+<file path="src/Mcp/Tools/MakeUserTool.php">
+<?php
+
+namespace Laravilt\Laravilt\Mcp\Tools;
+
+use Illuminate\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Tool;
+
+class MakeUserTool extends Tool
+{
+    /**
+     * The tool's description.
+     */
+    protected string $description = 'Create a new admin user for Laravilt panel';
+
+    /**
+     * Handle the tool request.
+     */
+    public function handle(Request $request): Response
+    {
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $password = $request->get('password');
+
+        if (! $name || ! $email || ! $password) {
+            return Response::text('Error: Name, email, and password are all required.');
+        }
+
+        // Validate email format
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return Response::text('Error: Invalid email format.');
+        }
+
+        // Check if user already exists
+        $userModel = config('laravilt.user_model', 'App\\Models\\User');
+        if (class_exists($userModel) && $userModel::where('email', $email)->exists()) {
+            return Response::text("Error: A user with email '{$email}' already exists.");
+        }
+
+        try {
+            Artisan::call('laravilt:make-user', [
+                '--name' => $name,
+                '--email' => $email,
+                '--password' => $password,
+            ]);
+
+            $output = Artisan::output();
+
+            return Response::text("Admin user created successfully.\n\n".$output);
+        } catch (\Exception $e) {
+            return Response::text("Failed to create user: {$e->getMessage()}");
+        }
+    }
+
+    /**
+     * Get the tool's input schema.
+     *
+     * @return array<string, \Illuminate\JsonSchema\JsonSchema>
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'name' => $schema->string('Full name of the user')->required(),
+            'email' => $schema->string('Email address for login')->required(),
+            'password' => $schema->string('Password for the user')->required(),
+        ];
+    }
+}
+</file>
+
+<file path="src/Mcp/Tools/SearchDocsTool.php">
+<?php
+
+namespace Laravilt\Laravilt\Mcp\Tools;
+
+use Illuminate\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\File;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Tool;
+
+class SearchDocsTool extends Tool
+{
+    /**
+     * The tool's description.
+     */
+    protected string $description = 'Search documentation across all Laravilt packages for a specific topic or keyword';
+
+    /**
+     * Handle the tool request.
+     */
+    public function handle(Request $request): Response
+    {
+        $query = strtolower($request->get('query'));
+        $package = $request->get('package', 'all');
+
+        $packagesPath = base_path('packages/laravilt');
+        $results = [];
+
+        if ($package === 'all') {
+            $packages = File::directories($packagesPath);
+        } else {
+            $packagePath = $packagesPath.'/'.$package;
+            if (! File::isDirectory($packagePath)) {
+                return Response::text("Package '{$package}' not found.");
+            }
+            $packages = [$packagePath];
+        }
+
+        foreach ($packages as $packageDir) {
+            $packageName = basename($packageDir);
+            $docsPath = $packageDir.'/docs';
+
+            if (! File::isDirectory($docsPath)) {
+                continue;
+            }
+
+            $docFiles = File::allFiles($docsPath);
+
+            foreach ($docFiles as $file) {
+                if ($file->getExtension() !== 'md') {
+                    continue;
+                }
+
+                $content = File::get($file->getPathname());
+                $contentLower = strtolower($content);
+
+                if (str_contains($contentLower, $query)) {
+                    // Get context around the match
+                    $pos = strpos($contentLower, $query);
+                    $start = max(0, $pos - 100);
+                    $context = substr($content, $start, 300);
+
+                    $results[] = [
+                        'package' => $packageName,
+                        'file' => $file->getFilename(),
+                        'path' => $file->getPathname(),
+                        'context' => '...'.trim($context).'...',
+                    ];
+                }
+            }
+        }
+
+        if (empty($results)) {
+            return Response::text("No documentation found matching '{$query}'.");
+        }
+
+        $output = "# Search Results for '{$query}'\n\n";
+        $output .= 'Found '.count($results)." match(es):\n\n";
+
+        foreach ($results as $result) {
+            $output .= "## {$result['package']}/{$result['file']}\n";
+            $output .= "**Path:** {$result['path']}\n\n";
+            $output .= "```\n{$result['context']}\n```\n\n";
+        }
+
+        return Response::text($output);
+    }
+
+    /**
+     * Get the tool's input schema.
+     *
+     * @return array<string, \Illuminate\JsonSchema\JsonSchema>
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'query' => $schema->string('Search query (keyword or phrase)')->required(),
+            'package' => $schema->string('Package to search in (or "all" for all packages)')
+                ->enum(['all', 'panel', 'forms', 'tables', 'auth', 'ai', 'notifications', 'widgets', 'actions', 'schemas', 'infolists', 'support', 'query-builder', 'plugins'])
+                ->default('all'),
+        ];
+    }
+}
+</file>
+
+<file path="src/Mcp/LaraviltServer.php">
+<?php
+
+namespace Laravilt\Laravilt\Mcp;
+
+use Laravel\Mcp\Server;
+use Laravilt\Laravilt\Mcp\Tools\InstallLaraviltTool;
+use Laravilt\Laravilt\Mcp\Tools\ListPackagesTool;
+use Laravilt\Laravilt\Mcp\Tools\MakeUserTool;
+use Laravilt\Laravilt\Mcp\Tools\PackageInfoTool;
+use Laravilt\Laravilt\Mcp\Tools\SearchDocsTool;
+
+class LaraviltServer extends Server
+{
+    /**
+     * The MCP server's name.
+     */
+    protected string $name = 'Laravilt';
+
+    /**
+     * The MCP server's version.
+     */
+    protected string $version = '1.0.0';
+
+    /**
+     * The MCP server's instructions for the LLM.
+     */
+    protected string $instructions = <<<'MARKDOWN'
+        This server provides management capabilities for Laravilt admin panel.
+
+        Laravilt is a modern Laravel Admin Panel built with Vue 3, Inertia.js, and AI capabilities.
+
+        You can:
+        - Install and configure Laravilt
+        - Create admin users
+        - List all installed Laravilt packages
+        - Get information about specific packages
+        - Search documentation across all packages
+
+        Key features:
+        - Panel management (panels, pages, resources, clusters)
+        - Form builder with 30+ field types
+        - Table builder with filters, sorting, bulk actions
+        - AI integration (OpenAI, Anthropic, Gemini)
+        - Authentication (passwords, social login, passkeys)
+        - Notifications and widgets
+
+        All Laravilt packages are located in the packages/laravilt directory.
+    MARKDOWN;
+
+    /**
+     * The tools registered with this MCP server.
+     *
+     * @var array<int, class-string<\Laravel\Mcp\Server\Tool>>
+     */
+    protected array $tools = [
+        ListPackagesTool::class,
+        PackageInfoTool::class,
+        InstallLaraviltTool::class,
+        MakeUserTool::class,
+        SearchDocsTool::class,
+    ];
+}
+</file>
+
+<file path="src/LaraviltPlugin.php">
+<?php
+
+namespace Laravilt\Laravilt;
+
+use Filament\Contracts\Plugin;
+use Filament\Panel;
+use Laravilt\Plugins\PluginProvider;
+
+class LaraviltPlugin extends PluginProvider implements Plugin
+{
+    /**
+     * The plugin ID (must be unique).
+     */
+    protected static string $id = 'laravilt';
+
+    /**
+     * The plugin name.
+     */
+    protected static string $name = 'Laravilt';
+
+    /**
+     * The plugin version.
+     */
+    protected static string $version = '1.0.0';
+
+    /**
+     * The plugin description.
+     */
+    protected static string $description = 'Laravilt plugin for Laravilt';
+
+    /**
+     * The plugin author.
+     */
+    protected static string $author = 'Fady Mondy';
+
+    /**
+     * Register the plugin with a Filament panel.
+     *
+     * This is where you register resources, pages, widgets, and other
+     * Filament-specific components that should be available in the panel.
+     */
+    public function register(Panel $panel): void
+    {
+        // Register resources
+        // $panel->resources([
+        //     Resources\YourResource::class,
+        // ]);
+
+        // Register pages
+        // $panel->pages([
+        //     Pages\YourPage::class,
+        // ]);
+
+        // Register widgets
+        // $panel->widgets([
+        //     Widgets\StatsWidget::class,
+        // ]);
+
+        // Register render hooks
+        // $panel->renderHook(
+        //     'panels::body.end',
+        //     fn () => view('laravilt::scripts')
+        // );
+    }
+
+    /**
+     * Boot the plugin for a panel.
+     *
+     * This method is called after the plugin is registered.
+     * Use it for panel-specific initialization logic.
+     */
+    public function boot(Panel $panel): void
+    {
+        // Add panel-specific boot logic if needed
+        // For example, register navigation items, custom themes, etc.
+    }
+
+    /**
+     * Get the plugin ID.
+     */
+    public function getId(): string
+    {
+        return static::$id;
+    }
+}
+</file>
+
+<file path="tests/Feature/DebugTest.php">
+<?php
+
+it('will not use debugging functions', function () {
+    expect(['dd', 'dump', 'ray'])->each->not->toBeUsed();
+});
+</file>
+
+<file path="tests/Pest.php">
+<?php
+
+use Laravilt\Laravilt\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);
+</file>
+
+<file path=".gitignore">
+.idea
+.phpunit.cache
+.phpunit.result.cache
+.DS_Store
+Thumbs.db
+/vendor/
+/node_modules/
+/.vscode/
+composer.lock
+package-lock.json
+*.log
+.env
+.env.backup
+.env.production
+/dist/
+/build/
+</file>
+
+<file path="CHANGELOG.md">
+# Changelog
+
+All notable changes to `Laravilt` will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Initial release
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+</file>
+
+<file path="CODE_OF_CONDUCT.md">
+# Contributor Covenant Code of Conduct
+
+## Our Pledge
+
+We as members, contributors, and leaders pledge to make participation in our
+community a harassment-free experience for everyone, regardless of age, body
+size, visible or invisible disability, ethnicity, sex characteristics, gender
+identity and expression, level of experience, education, socio-economic status,
+nationality, personal appearance, race, religion, or sexual identity
+and orientation.
+
+We pledge to act and interact in ways that contribute to an open, welcoming,
+diverse, inclusive, and healthy community.
+
+## Our Standards
+
+Examples of behavior that contributes to a positive environment for our
+community include:
+
+* Demonstrating empathy and kindness toward other people
+* Being respectful of differing opinions, viewpoints, and experiences
+* Giving and gracefully accepting constructive feedback
+* Accepting responsibility and apologizing to those affected by our mistakes,
+  and learning from the experience
+* Focusing on what is best not just for us as individuals, but for the
+  overall community
+
+Examples of unacceptable behavior include:
+
+* The use of sexualized language or imagery, and sexual attention or
+  advances of any kind
+* Trolling, insulting or derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or email
+  address, without their explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
+
+## Enforcement Responsibilities
+
+Community leaders are responsible for clarifying and enforcing our standards of
+acceptable behavior and will take appropriate and fair corrective action in
+response to any behavior that they deem inappropriate, threatening, offensive,
+or harmful.
+
+## Scope
+
+This Code of Conduct applies within all community spaces, and also applies when
+an individual is officially representing the community in public spaces.
+
+## Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported to the community leaders responsible for enforcement.
+
+All complaints will be reviewed and investigated promptly and fairly.
+
+All community leaders are obligated to respect the privacy and security of the
+reporter of any incident.
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org),
+version 2.0, available at https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
+</file>
+
+<file path="composer.json">
+{
+    "name": "laravilt/laravilt",
+    "description": "Laravilt - Modern Laravel Admin Panel with Vue 3, Inertia.js, and AI capabilities",
+    "version": "1.0.0",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "laravilt",
+        "admin-panel",
+        "inertia",
+        "vue",
+        "filament-alternative"
+    ],
+    "authors": [
+        {
+            "name": "Fady Mondy",
+            "email": "info@3x1.io"
+        }
+    ],
+    "require": {
+        "php": "^8.3|^8.4",
+        "laravilt/support": "^1.0",
+        "laravilt/panel": "^1.0",
+        "laravilt/auth": "^1.0",
+        "laravilt/forms": "^1.0",
+        "laravilt/tables": "^1.0",
+        "laravilt/actions": "^1.0",
+        "laravilt/schemas": "^1.0",
+        "laravilt/infolists": "^1.0",
+        "laravilt/notifications": "^1.0",
+        "laravilt/widgets": "^1.0",
+        "laravilt/query-builder": "^1.0",
+        "laravilt/ai": "^1.0",
+        "laravilt/plugins": "^1.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.9||^3.0",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.1.1||^7.10.0",
+        "orchestra/testbench": "^10.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "pestphp/pest-plugin-type-coverage": "^3.5",
+        "phpstan/extension-installer": "^1.3||^2.0",
+        "phpstan/phpstan-deprecation-rules": "^1.1||^2.0",
+        "phpstan/phpstan-phpunit": "^1.3||^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laravilt\\Laravilt\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Laravilt\\Laravilt\\Tests\\": "tests/",
+            "Laravilt\\Laravilt\\Tests\\Database\\Factories\\": "tests/database/factories",
+            "Laravilt\\Laravilt\\Tests\\Database\\Seeders\\": "tests/database/seeders"
+        }
+    },
+    "scripts": {
+        "testbench": "vendor/bin/testbench package:discover --ansi",
+        "db": "vendor/bin/testbench package:create-sqlite-db && vendor/bin/testbench migrate",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=512M",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laravilt\\Laravilt\\LaraviltServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+</file>
+
+<file path="LICENSE.md">
+MIT License
+
+Copyright (c) 2025 Fady Mondy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</file>
+
+<file path="mcp-server.json">
+{
+  "name": "laravilt",
+  "version": "1.0.0",
+  "description": "MCP Server for Laravilt - Modern Laravel Admin Panel",
+  "mcpServers": {
+    "laravilt-docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./docs"
+      ],
+      "metadata": {
+        "description": "Main Laravilt documentation and guides",
+        "categories": ["admin-panel", "laravel", "vue", "inertia"]
+      }
+    }
+  },
+  "resources": [
+    {
+      "uri": "laravilt://docs/index",
+      "name": "Laravilt Documentation",
+      "description": "Complete documentation for Laravilt admin panel",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "laravilt://docs/installation",
+      "name": "Installation Guide",
+      "description": "Step-by-step installation guide",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "laravilt://docs/quick-start",
+      "name": "Quick Start Guide",
+      "description": "Get started quickly with Laravilt",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "laravilt://docs/configuration",
+      "name": "Configuration Reference",
+      "description": "All configuration options",
+      "mimeType": "text/markdown"
+    }
+  ],
+  "tools": [
+    {
+      "name": "install_laravilt",
+      "description": "Install Laravilt admin panel. Uses: php artisan laravilt:install",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "force": {
+            "type": "boolean",
+            "description": "Overwrite existing files"
+          },
+          "skipMigrations": {
+            "type": "boolean",
+            "description": "Skip running migrations"
+          },
+          "skipNpm": {
+            "type": "boolean",
+            "description": "Skip npm install and build"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_admin_user",
+      "description": "Create a new admin user. Uses: php artisan laravilt:make-user",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_packages",
+      "description": "List all Laravilt packages and their status",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "search_laravilt_docs",
+      "description": "Search across all Laravilt documentation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "package": {
+            "type": "string",
+            "enum": ["all", "panel", "forms", "tables", "auth", "ai", "notifications", "widgets"],
+            "description": "Package to search in (default: all)"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_config_reference",
+      "description": "Get configuration reference for a specific setting",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "setting": {
+            "type": "string",
+            "description": "Configuration setting name"
+          }
+        },
+        "required": ["setting"]
+      }
+    }
+  ]
+}
+</file>
+
+<file path="phpstan.neon">
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    tmpDir: build/phpstan
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    checkMissingIterableValueType: false
+</file>
+
+<file path="phpunit.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Test Suite">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <report>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="build/coverage.txt"/>
+            <clover outputFile="build/logs/clover.xml"/>
+        </report>
+    </coverage>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
+</phpunit>
+</file>
+
+<file path="pint.json">
+{
+    "preset": "laravel",
+    "rules": {
+        "simplified_null_return": true,
+        "braces": false,
+        "new_with_braces": {
+            "anonymous_class": false,
+            "named_class": false
+        }
+    }
+}
+</file>
+
+<file path="testbench.yaml">
+providers:
+  - Laravilt\Laravilt\LaraviltServiceProvider
+
+workbench:
+  welcome: false
+  discovers:
+    web: true
+    api: true
+    commands: true
+    components: true
+</file>
+
+<file path="src/Commands/InstallLaraviltCommand.php">
+<?php
+
+namespace Laravilt\Laravilt\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
+
+class InstallLaraviltCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     */
+    protected $signature = 'laravilt:install
+                            {--force : Overwrite existing files}
+                            {--skip-migrations : Skip running migrations}
+                            {--skip-npm : Skip running npm install and build}';
+
+    /**
+     * The console command description.
+     */
+    protected $description = 'Install Laravilt admin panel and all its packages';
+
+    /**
+     * Laravilt packages in installation order.
+     */
+    protected array $packages = [
+        'laravilt-support' => 'Support utilities and helpers',
+        'laravilt-panel' => 'Admin panel core',
+        'laravilt-auth' => 'Authentication system',
+        'laravilt-forms' => 'Form builder components',
+        'laravilt-tables' => 'Table builder components',
+        'laravilt-actions' => 'Action system',
+        'laravilt-schemas' => 'Schema definitions',
+        'laravilt-infolists' => 'Information list components',
+        'laravilt-notifications' => 'Notification system',
+        'laravilt-widgets' => 'Dashboard widgets',
+        'laravilt-query-builder' => 'Query builder utilities',
+        'laravilt-ai' => 'AI assistant features',
+        'laravilt-plugins' => 'Plugin system',
+    ];
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): int
+    {
+        $this->newLine();
+        $this->components->info('🚀 Installing Laravilt Admin Panel...');
+        $this->newLine();
+
+        // Step 1: Publish all package configs
+        $this->publishConfigs();
+
+        // Step 2: Publish assets
+        $this->publishAssets();
+
+        // Step 3: Run migrations
+        if (! $this->option('skip-migrations')) {
+            $this->runMigrations();
+        }
+
+        // Step 4: Setup Vite aliases
+        $this->setupViteAliases();
+
+        // Step 5: Install npm dependencies and build
+        if (! $this->option('skip-npm')) {
+            $this->runNpmCommands();
+        }
+
+        // Step 6: Clear caches
+        $this->clearCaches();
+
+        $this->newLine();
+        $this->components->info('✅ Laravilt has been installed successfully!');
+        $this->newLine();
+
+        $this->components->bulletList([
+            'Run <fg=yellow>php artisan serve</> or use Laravel Herd',
+            'Visit <fg=cyan>/admin</> to access the admin panel',
+            'Run <fg=yellow>php artisan laravilt:make-user</> to create an admin user',
+        ]);
+
+        $this->newLine();
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Publish configuration files for all packages.
+     */
+    protected function publishConfigs(): void
+    {
+        $this->components->task('Publishing configurations', function () {
+            foreach ($this->packages as $tag => $description) {
+                $params = ['--tag' => "{$tag}-config"];
+
+                if ($this->option('force')) {
+                    $params['--force'] = true;
+                }
+
+                Artisan::call('vendor:publish', $params);
+            }
+
+            return true;
+        });
+    }
+
+    /**
+     * Publish frontend assets.
+     */
+    protected function publishAssets(): void
+    {
+        $this->components->task('Publishing frontend assets', function () {
+            $tags = [
+                'laravilt-panel-views',
+                'laravilt-panel-assets',
+                'laravilt-auth-views',
+                'laravilt-ai-views',
+            ];
+
+            foreach ($tags as $tag) {
+                $params = ['--tag' => $tag];
+
+                if ($this->option('force')) {
+                    $params['--force'] = true;
+                }
+
+                Artisan::call('vendor:publish', $params);
+            }
+
+            return true;
+        });
+    }
+
+    /**
+     * Run database migrations.
+     */
+    protected function runMigrations(): void
+    {
+        $this->components->task('Running migrations', function () {
+            Artisan::call('migrate', ['--force' => true]);
+
+            return true;
+        });
+    }
+
+    /**
+     * Setup Vite aliases for package components.
+     */
+    protected function setupViteAliases(): void
+    {
+        $this->components->task('Checking Vite configuration', function () {
+            $viteConfigPath = base_path('vite.config.ts');
+
+            if (! File::exists($viteConfigPath)) {
+                return false;
+            }
+
+            $content = File::get($viteConfigPath);
+
+            // Check if Laravilt aliases are already configured
+            if (str_contains($content, '@laravilt/')) {
+                return true; // Already configured
+            }
+
+            $this->components->warn('Please add Laravilt aliases to your vite.config.ts');
+
+            return true;
+        });
+    }
+
+    /**
+     * Run npm install and build commands.
+     */
+    protected function runNpmCommands(): void
+    {
+        if (! $this->confirm('Would you like to install npm dependencies and build assets?', true)) {
+            return;
+        }
+
+        $this->components->task('Installing npm dependencies', function () {
+            exec('npm install 2>&1', $output, $exitCode);
+
+            return $exitCode === 0;
+        });
+
+        $this->components->task('Building assets', function () {
+            exec('npm run build 2>&1', $output, $exitCode);
+
+            return $exitCode === 0;
+        });
+    }
+
+    /**
+     * Clear application caches.
+     */
+    protected function clearCaches(): void
+    {
+        $this->components->task('Clearing caches', function () {
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+            Artisan::call('view:clear');
+            Artisan::call('route:clear');
+
+            return true;
+        });
+    }
+}
+</file>
+
+<file path="src/Commands/MakeUserCommand.php">
+<?php
+
+namespace Laravilt\Laravilt\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
+
+class MakeUserCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     */
+    protected $signature = 'laravilt:make-user
+                            {--name= : The name of the user}
+                            {--email= : The email of the user}
+                            {--password= : The password for the user}';
+
+    /**
+     * The console command description.
+     */
+    protected $description = 'Create a new admin user for Laravilt';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): int
+    {
+        $userModel = config('laravilt.user_model', 'App\\Models\\User');
+
+        if (! class_exists($userModel)) {
+            $this->components->error("User model [{$userModel}] not found.");
+
+            return self::FAILURE;
+        }
+
+        $name = $this->option('name') ?? $this->ask('What is the user\'s name?');
+        $email = $this->option('email') ?? $this->ask('What is the user\'s email?');
+        $password = $this->option('password') ?? $this->secret('What is the user\'s password?');
+
+        if (! $name || ! $email || ! $password) {
+            $this->components->error('Name, email, and password are required.');
+
+            return self::FAILURE;
+        }
+
+        // Check if user already exists
+        if ($userModel::where('email', $email)->exists()) {
+            $this->components->error("A user with email [{$email}] already exists.");
+
+            return self::FAILURE;
+        }
+
+        // Create the user
+        $user = $userModel::create([
+            'name' => $name,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'email_verified_at' => now(),
+        ]);
+
+        $this->newLine();
+        $this->components->info("✅ User [{$user->name}] created successfully!");
+        $this->components->bulletList([
+            "Email: {$user->email}",
+            'Login at: /admin/login',
+        ]);
+        $this->newLine();
+
+        return self::SUCCESS;
+    }
+}
+</file>
+
+<file path="src/Mcp/Tools/PackageInfoTool.php">
+<?php
+
+namespace Laravilt\Laravilt\Mcp\Tools;
+
+use Illuminate\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\File;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Tool;
+
+class PackageInfoTool extends Tool
+{
+    /**
+     * The tool's description.
+     */
+    protected string $description = 'Get detailed information about a specific Laravilt package';
+
+    /**
+     * Handle the tool request.
+     */
+    public function handle(Request $request): Response
+    {
+        $packageName = $request->get('package');
+        $packagePath = base_path("packages/laravilt/{$packageName}");
+
+        if (! File::isDirectory($packagePath)) {
+            return Response::text("Package '{$packageName}' not found.");
+        }
+
+        $composerJsonPath = $packagePath.'/composer.json';
+        if (! File::exists($composerJsonPath)) {
+            return Response::text("Package '{$packageName}' has no composer.json.");
+        }
+
+        $composerData = json_decode(File::get($composerJsonPath), true);
+
+        $output = "# {$packageName}\n\n";
+        $output .= '**Package:** '.($composerData['name'] ?? 'N/A')."\n";
+        $output .= '**Version:** '.($composerData['version'] ?? 'N/A')."\n";
+        $output .= '**Description:** '.($composerData['description'] ?? 'N/A')."\n\n";
+
+        // Dependencies
+        if (isset($composerData['require']) && ! empty($composerData['require'])) {
+            $output .= "## Dependencies\n\n";
+            foreach ($composerData['require'] as $dep => $version) {
+                $output .= "- {$dep}: {$version}\n";
+            }
+            $output .= "\n";
+        }
+
+        // Autoload namespaces
+        if (isset($composerData['autoload']['psr-4'])) {
+            $output .= "## Namespaces\n\n";
+            foreach ($composerData['autoload']['psr-4'] as $namespace => $path) {
+                $output .= "- {$namespace} => {$path}\n";
+            }
+            $output .= "\n";
+        }
+
+        // Directory structure
+        $output .= "## Directory Structure\n\n";
+        $output .= "```\n";
+        $output .= $this->getDirectoryStructure($packagePath, '', 2);
+        $output .= "```\n\n";
+
+        // README if exists
+        $readmePath = $packagePath.'/README.md';
+        if (File::exists($readmePath)) {
+            $readme = File::get($readmePath);
+            // Get first 500 chars
+            $output .= "## README Preview\n\n";
+            $output .= substr($readme, 0, 500)."...\n";
+        }
+
+        return Response::text($output);
+    }
+
+    /**
+     * Get directory structure.
+     */
+    protected function getDirectoryStructure(string $path, string $prefix = '', int $maxDepth = 2, int $currentDepth = 0): string
+    {
+        if ($currentDepth >= $maxDepth) {
+            return '';
+        }
+
+        $output = '';
+        $items = File::directories($path);
+
+        foreach ($items as $item) {
+            $name = basename($item);
+
+            // Skip vendor and node_modules
+            if (in_array($name, ['vendor', 'node_modules', '.git'])) {
+                continue;
+            }
+
+            $output .= $prefix.$name."/\n";
+            $output .= $this->getDirectoryStructure($item, $prefix.'  ', $maxDepth, $currentDepth + 1);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Get the tool's input schema.
+     *
+     * @return array<string, \Illuminate\JsonSchema\JsonSchema>
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'package' => $schema->string('The package name (e.g., panel, forms, tables, auth, ai)')->required(),
+        ];
+    }
+}
+</file>
+
+<file path="tests/TestCase.php">
+<?php
+
+namespace Laravilt\Laravilt\Tests;
+
+use Orchestra\Testbench\TestCase as Orchestra;
+
+class TestCase extends Orchestra
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Additional setup if needed
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [
+            \Laravilt\Laravilt\LaraviltServiceProvider::class,
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app): void
+    {
+        // Setup environment for testing
+        config()->set('database.default', 'testing');
+    }
+}
+</file>
+
+<file path="README.md">
+![laravilt](https://raw.githubusercontent.com/laravilt/laravilt/master/arts/screenshot.jpg)
+
+# Laravilt
+
+A modern Laravel Admin Panel built with Vue 3, Inertia.js, and AI capabilities. Inspired by Filament but powered by the frontend.
+
+[![Latest Stable Version](https://poser.pugx.org/laravilt/laravilt/version.svg)](https://packagist.org/packages/laravilt/laravilt)
+[![License](https://poser.pugx.org/laravilt/laravilt/license.svg)](https://packagist.org/packages/laravilt/laravilt)
+[![Downloads](https://poser.pugx.org/laravilt/laravilt/d/total.svg)](https://packagist.org/packages/laravilt/laravilt)
+[![Dependabot Updates](https://github.com/laravilt/laravilt/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/laravilt/laravilt/actions/workflows/dependabot/dependabot-updates)
+[![PHP Code Styling](https://github.com/laravilt/laravilt/actions/workflows/fix-php-code-styling.yml/badge.svg)](https://github.com/laravilt/laravilt/actions/workflows/fix-php-code-styling.yml)
+[![Tests](https://github.com/laravilt/laravilt/actions/workflows/tests.yml/badge.svg)](https://github.com/laravilt/laravilt/actions/workflows/tests.yml)
+
+## Features
+
+- **Modern Stack**: Laravel 12, Vue 3, Inertia.js v2, Tailwind CSS v4
+- **Beautiful UI**: Built on shadcn/vue and Reka UI components
+- **AI Integration**: Multi-provider AI support (OpenAI, Anthropic, Gemini)
+- **Global Search**: AI-powered search across all resources
+- **Rich Form Builder**: 30+ field types with validation
+- **Powerful Tables**: Sorting, filtering, bulk actions, exports
+- **Notifications**: Real-time in-app notifications
+- **Widgets**: Dashboard widgets with charts and stats
+- **Multi-tenancy**: Built-in tenant support
+- **Authentication**: Multiple auth methods (passwords, social, passkeys)
+- **RTL Support**: Full right-to-left language support
+- **Dark Mode**: System-aware theming
+
+## Included Packages
+
+This meta-package includes all Laravilt components:
+
+| Package | Description |
+|---------|-------------|
+| `laravilt/support` | Core utilities and helpers |
+| `laravilt/panel` | Admin panel core framework |
+| `laravilt/auth` | Authentication system |
+| `laravilt/forms` | Form builder with 30+ fields |
+| `laravilt/tables` | Table builder with actions |
+| `laravilt/actions` | Action system for CRUD |
+| `laravilt/schemas` | Schema definitions |
+| `laravilt/infolists` | Information display lists |
+| `laravilt/notifications` | Notification system |
+| `laravilt/widgets` | Dashboard widgets |
+| `laravilt/query-builder` | Query building utilities |
+| `laravilt/ai` | AI assistant integration |
+| `laravilt/plugins` | Plugin system & generators |
+
+## Requirements
+
+- PHP 8.3+
+- Laravel 12+
+- Node.js 18+
+- npm or pnpm
+
+## Installation
+
+```bash
+composer require laravilt/laravilt
+```
+
+Run the installer:
+
+```bash
+php artisan laravilt:install
+```
+
+This will:
+- Publish all configurations
+- Run migrations
+- Setup frontend assets
+- Clear caches
+
+### Create Admin User
+
+```bash
+php artisan laravilt:make-user
+```
+
+## Quick Start
+
+### 1. Create a Panel
+
+```bash
+php artisan laravilt:panel admin
+```
+
+### 2. Create a Resource
+
+```bash
+php artisan laravilt:resource User --generate
+```
+
+This generates a complete CRUD resource with:
+- Resource class
+- Form definition
+- Table definition
+- List, Create, Edit, View pages
+
+### 3. Configure the Panel
+
+```php
+// app/Providers/Laravilt/AdminPanelProvider.php
+use Laravilt\Panel\Panel;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->id('admin')
+            ->path('admin')
+            ->login()
+            ->colors([
+                'primary' => '#3b82f6',
+            ])
+            ->discoverResources(in: app_path('Laravilt/Admin/Resources'))
+            ->discoverPages(in: app_path('Laravilt/Admin/Pages'))
+            ->globalSearch()
+            ->aiProviders(fn ($ai) => $ai
+                ->openai()
+                ->anthropic()
+            );
+    }
+}
+```
+
+## CLI Commands
+
+### Panel Management
+- `laravilt:panel {name}` - Create a new panel
+- `laravilt:page {name}` - Create a panel page
+- `laravilt:cluster {name}` - Create a page cluster
+
+### Resource Management
+- `laravilt:resource {name}` - Create a resource
+- `laravilt:relation {name}` - Create a relation manager
+
+### Plugin Development
+- `laravilt:plugin {name}` - Create a new plugin
+- `laravilt:component {name}` - Generate plugin components
+- `laravilt:make {type}` - Generate Laravel components in plugin
+
+### System
+- `laravilt:install` - Install/update Laravilt
+- `laravilt:make-user` - Create admin user
+
+## Configuration
+
+Publish the configuration:
+
+```bash
+php artisan vendor:publish --tag=laravilt-config
+```
+
+Key configuration options in `config/laravilt.php`:
+
+```php
+return [
+    'user_model' => App\Models\User::class,
+    'path' => 'admin',
+    'guard' => 'web',
+    'locale' => 'en',
+    'locales' => ['en' => 'English', 'ar' => 'Arabic'],
+    'dark_mode' => true,
+    'features' => [
+        'ai_assistant' => true,
+        'global_search' => true,
+        'notifications' => true,
+    ],
+    'ai' => [
+        'provider' => env('LARAVILT_AI_PROVIDER', 'openai'),
+        'model' => env('LARAVILT_AI_MODEL', 'gpt-4'),
+    ],
+];
+```
+
+## Form Fields
+
+Available form field types:
+
+- Text, Textarea, RichEditor, MarkdownEditor
+- Number, Currency, Percent
+- Select, MultiSelect, Radio, Checkbox
+- Toggle, Switch
+- DatePicker, DateTimePicker, TimePicker, DateRangePicker
+- FileUpload, ImageUpload
+- ColorPicker, IconPicker
+- Repeater, Builder, KeyValue
+- Code Editor, JSON Editor
+- Tags, Rating, Slider
+- And more...
+
+## Table Features
+
+- Sortable columns
+- Searchable columns
+- Filterable with custom filters
+- Bulk actions
+- Row actions
+- Export to CSV/Excel
+- Pagination with per-page options
+- Sticky header support
+- Column visibility toggle
+
+## AI Features
+
+### Global Search
+AI-enhanced search across all registered resources.
+
+### AI Chat
+Built-in chat interface supporting:
+- OpenAI (GPT-3.5, GPT-4, GPT-4o)
+- Anthropic (Claude 3, Claude 3.5)
+- Google Gemini
+
+Configure providers in `.env`:
+
+```env
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_AI_API_KEY=...
+```
+
+## Testing
+
+```bash
+composer test
+```
+
+## Code Style
+
+```bash
+composer format
+```
+
+## License
+
+The MIT License (MIT). See [License File](LICENSE.md) for more information.
+
+## Credits
+
+- Built by [Fady Mondy](https://github.com/3x1io)
+- Inspired by [Filament PHP](https://filamentphp.com)
+- UI components from [shadcn/vue](https://www.shadcn-vue.com)
+</file>
+
+<file path=".github/workflows/tests.yml">
+name: Tests
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.3, 8.4]
+        laravel: [12.*]
+        dependency-version: [prefer-stable]
+
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+
+      - name: Execute tests
+        run: vendor/bin/pest
+</file>
+
+<file path=".github/workflows/fix-php-code-styling.yml">
+name: Fix PHP Code Styling
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  php-code-styling:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Fix PHP code style issues
+        uses: aglipanci/laravel-pint-action@2.6
+        with:
+          preset: laravel
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Fix styling
+</file>
+
+<file path="src/LaraviltServiceProvider.php">
+<?php
+
+namespace Laravilt\Laravilt;
+
+use Illuminate\Support\ServiceProvider;
+
+class LaraviltServiceProvider extends ServiceProvider
+{
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        // Merge config
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/laravilt.php',
+            'laravilt'
+        );
+    }
+
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        // Load translations
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravilt');
+
+        if ($this->app->runningInConsole()) {
+            // Publish config
+            $this->publishes([
+                __DIR__.'/../config/laravilt.php' => config_path('laravilt.php'),
+            ], 'laravilt-config');
+
+            // Register commands
+            $this->commands([
+                Commands\InstallLaraviltCommand::class,
+                Commands\MakeUserCommand::class,
+            ]);
+        }
+    }
+}
+</file>
+
+</files>
