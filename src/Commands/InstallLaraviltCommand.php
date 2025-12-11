@@ -50,53 +50,71 @@ class InstallLaraviltCommand extends Command
         $this->components->info('🚀 Installing Laravilt Admin Panel...');
         $this->newLine();
 
-        // Step 1: Publish Vite config
+        // Step 1: Publish package.json
+        $this->publishPackageJson();
+
+        // Step 2: Publish Vite config
         $this->publishViteConfig();
 
-        // Step 2: Publish CSS
+        // Step 3: Publish CSS
         $this->publishCss();
 
-        // Step 3: Publish middleware
+        // Step 4: Publish app.ts
+        $this->publishAppTs();
+
+        // Step 5: Publish app.blade.php
+        $this->publishAppBlade();
+
+        // Step 6: Publish middleware
         $this->publishMiddleware();
 
-        // Step 4: Publish layouts
+        // Step 7: Publish layouts
         $this->publishLayouts();
 
-        // Step 5: Publish components
+        // Step 8: Publish components
         $this->publishComponents();
 
-        // Step 6: Publish types
+        // Step 9: Publish UI components
+        $this->publishUiComponents();
+
+        // Step 10: Publish composables
+        $this->publishComposables();
+
+        // Step 11: Publish types
         $this->publishTypes();
 
-        // Step 7: Publish User model
+        // Step 12: Publish User model
         $this->publishUserModel();
 
-        // Step 8: Publish bootstrap files
+        // Step 13: Publish bootstrap files
         $this->publishBootstrap();
 
-        // Step 9: Publish route files
+        // Step 14: Publish route files
         $this->publishRoutes();
 
-        // Step 10: Publish all package configs
+        // Step 15: Delete settings folder (handled by auth package)
+        $this->deleteSettingsFolder();
+
+        // Step 16: Publish all package configs
         $this->publishConfigs();
 
-        // Step 11: Publish assets
+        // Step 17: Publish assets
         $this->publishAssets();
 
-        // Step 12: Run migrations
+        // Step 18: Run migrations
         if (! $this->option('skip-migrations')) {
             $this->runMigrations();
         }
 
-        // Step 13: Install npm dependencies and build
+        // Step 19: Install npm dependencies and build
         if (! $this->option('skip-npm')) {
             $this->runNpmCommands();
         }
 
-        // Step 14: Clear caches
+        // Step 20: Clear caches
         $this->clearCaches();
 
-        // Step 15: Create panel if --panel option provided
+        // Step 21: Create panel if --panel option provided
         $panelName = $this->option('panel');
         if ($panelName) {
             $this->createPanel($panelName);
@@ -112,7 +130,7 @@ class InstallLaraviltCommand extends Command
         ];
 
         if (! $panelName) {
-            array_splice($nextSteps, 1, 0, 'Run <fg=yellow>php artisan make:panel admin</> to create your first panel');
+            array_splice($nextSteps, 1, 0, 'Run <fg=yellow>php artisan laravilt:panel admin</> to create your first panel');
         } else {
             $nextSteps[] = "Visit <fg=cyan>/{$panelName}</> to access the admin panel";
         }
@@ -133,6 +151,125 @@ class InstallLaraviltCommand extends Command
 
             return true;
         });
+    }
+
+    /**
+     * Publish package.json.
+     */
+    protected function publishPackageJson(): void
+    {
+        $stubPath = $this->getStubPath('package.json.stub');
+        $targetPath = base_path('package.json');
+
+        if (! File::exists($targetPath) || $this->option('force')) {
+            if (File::exists($stubPath)) {
+                $this->copyStub($stubPath, $targetPath);
+            } else {
+                // Create package.json inline if stub doesn't exist
+                $this->createPackageJsonInline($targetPath);
+            }
+            $this->components->info('package.json published');
+        } else {
+            $this->components->warn('Skipped package.json (already exists, use --force to overwrite)');
+        }
+    }
+
+    /**
+     * Create package.json inline when stub is not available.
+     */
+    protected function createPackageJsonInline(string $targetPath): void
+    {
+        $content = <<<'JSON'
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "build:ssr": "vite build && vite build --ssr",
+        "dev": "vite",
+        "format": "prettier --write resources/",
+        "format:check": "prettier --check resources/",
+        "lint": "eslint . --fix"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.19.0",
+        "@laravel/vite-plugin-wayfinder": "^0.1.3",
+        "@tailwindcss/vite": "^4.1.11",
+        "@types/node": "^22.13.5",
+        "@vitejs/plugin-vue": "^6.0.0",
+        "@vue/eslint-config-typescript": "^14.3.0",
+        "concurrently": "^9.0.1",
+        "eslint": "^9.17.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-vue": "^9.32.0",
+        "prettier": "^3.4.2",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "typescript": "^5.2.2",
+        "typescript-eslint": "^8.23.0",
+        "vite": "^7.0.4",
+        "vue-tsc": "^2.2.4"
+    },
+    "dependencies": {
+        "@codemirror/commands": "^6.10.0",
+        "@codemirror/lang-css": "^6.3.1",
+        "@codemirror/lang-html": "^6.4.11",
+        "@codemirror/lang-javascript": "^6.2.4",
+        "@codemirror/lang-json": "^6.0.2",
+        "@codemirror/lang-php": "^6.0.2",
+        "@codemirror/language": "^6.11.3",
+        "@codemirror/state": "^6.5.2",
+        "@codemirror/theme-one-dark": "^6.1.3",
+        "@codemirror/view": "^6.38.8",
+        "@inertiajs/vue3": "^2.1.0",
+        "@laravilt/actions": "npm:@laravilt/actions@^1.0",
+        "@laravilt/forms": "npm:@laravilt/forms@^1.0",
+        "@laravilt/infolists": "npm:@laravilt/infolists@^1.0",
+        "@laravilt/notifications": "npm:@laravilt/notifications@^1.0",
+        "@laravilt/schemas": "npm:@laravilt/schemas@^1.0",
+        "@laravilt/support": "npm:@laravilt/support@^1.0",
+        "@laravilt/tables": "npm:@laravilt/tables@^1.0",
+        "@laravilt/widgets": "npm:@laravilt/widgets@^1.0",
+        "@tiptap/extension-color": "^3.11.0",
+        "@tiptap/extension-highlight": "^3.11.0",
+        "@tiptap/extension-image": "^3.11.0",
+        "@tiptap/extension-link": "^3.11.0",
+        "@tiptap/extension-placeholder": "^3.11.0",
+        "@tiptap/extension-table": "^3.11.0",
+        "@tiptap/extension-table-cell": "^3.11.0",
+        "@tiptap/extension-table-header": "^3.11.0",
+        "@tiptap/extension-table-row": "^3.11.0",
+        "@tiptap/extension-text-align": "^3.11.0",
+        "@tiptap/extension-text-style": "^3.11.0",
+        "@tiptap/extension-underline": "^3.11.0",
+        "@tiptap/starter-kit": "^3.11.0",
+        "@tiptap/vue-3": "^3.11.0",
+        "@vueuse/core": "^12.8.2",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "codemirror": "^6.0.2",
+        "cropperjs": "^1.6.2",
+        "filepond": "^4.32.10",
+        "filepond-plugin-file-validate-size": "^2.2.8",
+        "filepond-plugin-file-validate-type": "^1.2.9",
+        "filepond-plugin-image-preview": "^4.6.12",
+        "laravel-vite-plugin": "^2.0.0",
+        "lucide-vue-next": "^0.468.0",
+        "markdown-it": "^14.1.0",
+        "radix-vue": "^1.9.17",
+        "reka-ui": "^2.6.1",
+        "sortablejs": "^1.15.6",
+        "tailwind-merge": "^3.2.0",
+        "tailwindcss": "^4.1.1",
+        "tw-animate-css": "^1.2.5",
+        "vue": "^3.5.13",
+        "vue-filepond": "^7.0.4"
+    }
+}
+JSON;
+
+        file_put_contents($targetPath, $content);
     }
 
     /**
@@ -239,6 +376,187 @@ VITE;
             } else {
                 $this->components->warn('Skipped css/app.css (already exists, use --force to overwrite)');
             }
+        }
+    }
+
+    /**
+     * Publish app.ts file.
+     */
+    protected function publishAppTs(): void
+    {
+        $stubPath = $this->getStubPath('app.ts.stub');
+        $targetPath = resource_path('js/app.ts');
+
+        if (! File::exists($targetPath) || $this->option('force')) {
+            if (File::exists($stubPath)) {
+                $this->copyStub($stubPath, $targetPath);
+            } else {
+                $this->createAppTsInline($targetPath);
+            }
+            $this->components->info('app.ts published');
+        } else {
+            $this->components->warn('Skipped app.ts (already exists, use --force to overwrite)');
+        }
+    }
+
+    /**
+     * Create app.ts inline when stub is not available.
+     */
+    protected function createAppTsInline(string $targetPath): void
+    {
+        $content = <<<'TYPESCRIPT'
+import '../css/app.css';
+
+import { createInertiaApp } from '@inertiajs/vue3';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import type { DefineComponent } from 'vue';
+import { createApp, h } from 'vue';
+import { initializeTheme } from './composables/useAppearance';
+import { notify } from '@laravilt/notifications/app';
+import LaraviltForms from '@laravilt/forms/app';
+import LaraviltTables from '@laravilt/tables/app';
+import LaraviltWidgets from '@laravilt/widgets/app';
+
+// Make notify globally available
+(window as any).notify = notify;
+
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+createInertiaApp({
+    title: (title) => (title ? `${title} - ${appName}` : appName),
+    resolve: async (name) => {
+        const appPages = import.meta.glob<DefineComponent>('./pages/**/*.vue');
+        const panelPages = import.meta.glob<DefineComponent>('../vendor/laravilt/panel/resources/js/pages/**/*.vue');
+        const authPages = import.meta.glob<DefineComponent>('../vendor/laravilt/auth/resources/js/Pages/**/*.vue');
+        const aiPages = import.meta.glob<DefineComponent>('../vendor/laravilt/ai/resources/js/Pages/**/*.vue');
+
+        if (name.startsWith('laravilt-auth/')) {
+            const authPageName = name.replace('laravilt-auth/', '');
+            return await resolvePageComponent(
+                `../vendor/laravilt/auth/resources/js/Pages/${authPageName}.vue`,
+                authPages,
+            );
+        }
+
+        try {
+            return await resolvePageComponent(`./pages/${name}.vue`, appPages);
+        } catch (e) {
+            try {
+                return await resolvePageComponent(
+                    `../vendor/laravilt/panel/resources/js/pages/${name}.vue`,
+                    panelPages,
+                );
+            } catch (e2) {
+               try {
+                   return await resolvePageComponent(
+                       `../vendor/laravilt/auth/resources/js/Pages/${name}.vue`,
+                       authPages,
+                   );
+               } catch (e3) {
+                   return await resolvePageComponent(
+                       `../vendor/laravilt/ai/resources/js/Pages/${name}.vue`,
+                       aiPages,
+                   );
+               }
+            }
+        }
+    },
+    setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) })
+            .use(plugin)
+            .use(LaraviltForms)
+            .use(LaraviltTables)
+            .use(LaraviltWidgets)
+            .mount(el);
+    },
+    progress: {
+        color: '#4B5563',
+    },
+});
+
+initializeTheme();
+TYPESCRIPT;
+
+        $dir = dirname($targetPath);
+        if (! File::isDirectory($dir)) {
+            File::makeDirectory($dir, 0755, true);
+        }
+        file_put_contents($targetPath, $content);
+    }
+
+    /**
+     * Publish app.blade.php file.
+     */
+    protected function publishAppBlade(): void
+    {
+        $stubPath = $this->getStubPath('views/app.blade.php.stub');
+        $targetPath = resource_path('views/app.blade.php');
+
+        if (! File::exists($targetPath) || $this->option('force')) {
+            if (File::exists($stubPath)) {
+                $this->copyStub($stubPath, $targetPath);
+                $this->components->info('app.blade.php published');
+            } else {
+                $this->components->warn('app.blade.php stub not found');
+            }
+        } else {
+            $this->components->warn('Skipped app.blade.php (already exists, use --force to overwrite)');
+        }
+    }
+
+    /**
+     * Publish UI components from package.
+     */
+    protected function publishUiComponents(): void
+    {
+        $this->components->task('Publishing UI components', function () {
+            // UI components are published via service provider tags
+            Artisan::call('vendor:publish', [
+                '--tag' => 'laravilt-panel-ui',
+                '--force' => $this->option('force'),
+            ]);
+
+            return true;
+        });
+    }
+
+    /**
+     * Publish composables.
+     */
+    protected function publishComposables(): void
+    {
+        $composables = [
+            'useAppearance.ts',
+            'useInitials.ts',
+            'useLocalization.ts',
+            'useTwoFactorAuth.ts',
+            'usePanelFont.ts',
+        ];
+
+        foreach ($composables as $composable) {
+            $stubPath = $this->getStubPath("composables/{$composable}.stub");
+            $targetPath = resource_path("js/composables/{$composable}");
+
+            if (File::exists($stubPath)) {
+                if (! File::exists($targetPath) || $this->option('force')) {
+                    $this->copyStub($stubPath, $targetPath);
+                }
+            }
+        }
+
+        $this->components->info('Composables published');
+    }
+
+    /**
+     * Delete the settings folder (settings pages are handled by auth package).
+     */
+    protected function deleteSettingsFolder(): void
+    {
+        $settingsPath = resource_path('js/pages/settings');
+
+        if (File::isDirectory($settingsPath)) {
+            File::deleteDirectory($settingsPath);
+            $this->components->info('Deleted settings folder (handled by auth package)');
         }
     }
 
