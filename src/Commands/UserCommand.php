@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
 use function Laravel\Prompts\password;
-use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
 class UserCommand extends Command
