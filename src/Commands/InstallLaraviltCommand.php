@@ -129,13 +129,7 @@ class InstallLaraviltCommand extends Command
     protected function createPanel(string $name): void
     {
         $this->components->task("Creating '{$name}' panel", function () use ($name) {
-            $params = ['name' => $name];
-
-            if ($this->option('force')) {
-                $params['--force'] = true;
-            }
-
-            Artisan::call('make:panel', $params);
+            Artisan::call('laravilt:panel', ['id' => $name]);
 
             return true;
         });
@@ -149,14 +143,85 @@ class InstallLaraviltCommand extends Command
         $stubPath = $this->getStubPath('vite.config.ts.stub');
         $targetPath = base_path('vite.config.ts');
 
-        if (File::exists($stubPath)) {
-            if (! File::exists($targetPath) || $this->option('force')) {
+        if (! File::exists($targetPath) || $this->option('force')) {
+            if (File::exists($stubPath)) {
                 $this->copyStub($stubPath, $targetPath);
-                $this->components->info('Vite config published');
             } else {
-                $this->components->warn('Skipped vite.config.ts (already exists, use --force to overwrite)');
+                // Create vite config inline if stub doesn't exist
+                $this->createViteConfigInline($targetPath);
             }
+            $this->components->info('Vite config published');
+        } else {
+            $this->components->warn('Skipped vite.config.ts (already exists, use --force to overwrite)');
         }
+    }
+
+    /**
+     * Create vite.config.ts inline when stub is not available.
+     */
+    protected function createViteConfigInline(string $targetPath): void
+    {
+        $content = <<<'VITE'
+import { wayfinder } from '@laravel/vite-plugin-wayfinder';
+import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
+import laravel from 'laravel-vite-plugin';
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.ts'],
+            ssr: 'resources/js/ssr.ts',
+            refresh: true,
+        }),
+        tailwindcss(),
+        wayfinder({
+            formVariants: true,
+        }),
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
+    ],
+    resolve: {
+        alias: {
+            '@': resolve(__dirname, 'resources/js'),
+            '@laravilt/panel': resolve(__dirname, 'vendor/laravilt/panel/resources/js'),
+            '@laravilt/widgets': resolve(__dirname, 'vendor/laravilt/widgets/resources/js'),
+            '@laravilt/forms': resolve(__dirname, 'vendor/laravilt/forms/resources/js'),
+            '@laravilt/tables': resolve(__dirname, 'vendor/laravilt/tables/resources/js'),
+            '@laravilt/actions': resolve(__dirname, 'vendor/laravilt/actions/resources/js'),
+            '@laravilt/infolists': resolve(__dirname, 'vendor/laravilt/infolists/resources/js'),
+            '@laravilt/notifications': resolve(__dirname, 'vendor/laravilt/notifications/resources/js'),
+            '@laravilt/schemas': resolve(__dirname, 'vendor/laravilt/schemas/resources/js'),
+            '@laravilt/support': resolve(__dirname, 'vendor/laravilt/support/resources/js'),
+            '@laravilt/auth': resolve(__dirname, 'vendor/laravilt/auth/resources/js'),
+            '@laravilt/ai': resolve(__dirname, 'vendor/laravilt/ai/resources/js'),
+        },
+        dedupe: ['vue', '@inertiajs/vue3'],
+    },
+    optimizeDeps: {
+        include: ['@inertiajs/vue3', 'vue'],
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vue-vendor': ['vue', '@inertiajs/vue3'],
+                },
+            },
+        },
+    },
+});
+VITE;
+
+        file_put_contents($targetPath, $content);
     }
 
     /**
@@ -466,15 +531,25 @@ class InstallLaraviltCommand extends Command
      */
     protected function getStubPath(string $stub): string
     {
-        // Try panel package stubs first
-        $panelStubPath = dirname(__DIR__, 4).'/panel/stubs/'.$stub;
-
-        if (File::exists($panelStubPath)) {
-            return $panelStubPath;
+        // Try vendor path first (for composer-installed packages)
+        $vendorPath = base_path('vendor/laravilt/panel/stubs/'.$stub);
+        if (File::exists($vendorPath)) {
+            return $vendorPath;
         }
 
-        // Fallback to vendor path
-        return base_path('vendor/laravilt/panel/stubs/'.$stub);
+        // Try local packages path (for development)
+        $localPath = base_path('packages/laravilt/panel/stubs/'.$stub);
+        if (File::exists($localPath)) {
+            return $localPath;
+        }
+
+        // Try relative to this package (for monorepo)
+        $relativePath = dirname(__DIR__, 4).'/panel/stubs/'.$stub;
+        if (File::exists($relativePath)) {
+            return $relativePath;
+        }
+
+        return $vendorPath; // Return vendor path as default (will fail gracefully in copyStub)
     }
 
     /**
