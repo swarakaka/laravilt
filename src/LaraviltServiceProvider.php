@@ -35,7 +35,7 @@ class LaraviltServiceProvider extends ServiceProvider
             // Register commands
             $this->commands([
                 Commands\InstallLaraviltCommand::class,
-                Commands\MakeUserCommand::class,
+                Commands\UserCommand::class,
             ]);
         }
     }

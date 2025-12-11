@@ -5,12 +5,12 @@ namespace Laravilt\Laravilt\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
-class MakeUserCommand extends Command
+class UserCommand extends Command
 {
     /**
      * The name and signature of the console command.
      */
-    protected $signature = 'laravilt:make-user
+    protected $signature = 'laravilt:user
                             {--name= : The name of the user}
                             {--email= : The email of the user}
                             {--password= : The password for the user}';
