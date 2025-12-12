@@ -26,6 +26,204 @@ A modern Laravel Admin Panel built with Vue 3, Inertia.js, and AI capabilities. 
 - **RTL Support**: Full right-to-left language support
 - **Dark Mode**: System-aware theming
 
+## Screenshots
+
+### Dashboard & Widgets
+<table>
+<tr>
+<td width="50%"><img src="arts/14-dashboard-widgets.png" alt="Dashboard Widgets"></td>
+<td width="50%"><img src="arts/16-dashboard-light-mode.png" alt="Dashboard Light Mode"></td>
+</tr>
+</table>
+
+### Products Management
+
+**Table View & CRUD Operations**
+<table>
+<tr>
+<td width="50%"><img src="arts/01-products-table-view.png" alt="Products Table"></td>
+<td width="50%"><img src="arts/02-products-create-form.png" alt="Create Product"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/03-products-edit-form.png" alt="Edit Product"></td>
+<td width="50%"><img src="arts/04-products-view-infolist.png" alt="View Product"></td>
+</tr>
+</table>
+
+**Grid Views**
+<table>
+<tr>
+<td width="50%"><img src="arts/06-products-grid-view.png" alt="Products Grid"></td>
+<td width="50%"><img src="arts/48-products-grid-badges.png" alt="Grid with Badges"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/45-products-grid-filters.png" alt="Grid with Filters"></td>
+<td width="50%"><img src="arts/46-products-grid-toggle.png" alt="Grid Toggle View"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/47-products-grid-sorting.png" alt="Grid Sorting"></td>
+<td width="50%"><img src="arts/44-simple-resource.png" alt="Simple Resource"></td>
+</tr>
+</table>
+
+### Customers Management
+<table>
+<tr>
+<td width="50%"><img src="arts/07-customers-grid-view.png" alt="Customers Grid"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+### API & Endpoints
+<table>
+<tr>
+<td width="50%"><img src="arts/08-api-products-list-endpoint.png" alt="API Products List"></td>
+<td width="50%"><img src="arts/09-api-products-list-response.png" alt="API Response"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/10-api-products-get-one.png" alt="API Get One"></td>
+<td width="50%"><img src="arts/11-api-customers-create.png" alt="API Customers Create"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/12-api-create.png" alt="API Create"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+### AI Chat
+<table>
+<tr>
+<td width="50%"><img src="arts/20-ai-chat-empty.png" alt="AI Chat Interface"></td>
+<td width="50%"><img src="arts/21-ai-chat-mention-menu.png" alt="AI Resource Mention"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/22-ai-chat-conversation.png" alt="AI Conversation"></td>
+<td width="50%"><img src="arts/29-global-search-ai.png" alt="Global Search with AI"></td>
+</tr>
+</table>
+
+### Authentication
+
+**Login & Registration**
+<table>
+<tr>
+<td width="50%"><img src="arts/39-auth-login.png" alt="Login"></td>
+<td width="50%"><img src="arts/40-auth-register.png" alt="Register"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/41-auth-forgot-password.png" alt="Forgot Password"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+**Two-Factor Authentication**
+<table>
+<tr>
+<td width="50%"><img src="arts/25-settings-2fa-active.png" alt="2FA Active"></td>
+<td width="50%"><img src="arts/27-settings-2fa.png" alt="2FA Settings"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/28-settings-2fa-qr.png" alt="2FA QR Code"></td>
+<td width="50%"><img src="arts/49-settings-2fa-setup.png" alt="2FA Setup"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/50-settings-2fa-qr-code.png" alt="2FA QR Code Scan"></td>
+<td width="50%"><img src="arts/51-settings-2fa-recovery-codes.png" alt="2FA Recovery Codes"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/52-settings-2fa-verify.png" alt="2FA Verify"></td>
+<td width="50%"><img src="arts/53-auth-2fa-challenge.png" alt="2FA Challenge"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/54-auth-2fa-authenticator.png" alt="2FA Authenticator"></td>
+<td width="50%"><img src="arts/55-auth-2fa-recovery.png" alt="2FA Recovery"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/56-auth-2fa-success.png" alt="2FA Success"></td>
+<td width="50%"><img src="arts/26-settings-2fa-disable-modal.png" alt="2FA Disable Modal"></td>
+</tr>
+</table>
+
+### Settings
+
+**Profile & Security**
+<table>
+<tr>
+<td width="50%"><img src="arts/23-settings-profile.png" alt="Profile Settings"></td>
+<td width="50%"><img src="arts/24-settings-password.png" alt="Password Settings"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/19-settings-browser-sessions.png" alt="Browser Sessions"></td>
+<td width="50%"><img src="arts/37-settings-connected-accounts.png" alt="Connected Accounts"></td>
+</tr>
+</table>
+
+**Passkeys**
+<table>
+<tr>
+<td width="50%"><img src="arts/34-settings-passkeys.png" alt="Passkeys"></td>
+<td width="50%"><img src="arts/35-settings-passkeys-register.png" alt="Register Passkey"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/36-settings-passkey-save.png" alt="Save Passkey"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+**API Tokens**
+<table>
+<tr>
+<td width="50%"><img src="arts/30-settings-api-tokens-list.png" alt="API Tokens List"></td>
+<td width="50%"><img src="arts/42-settings-create-token.png" alt="Create Token"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/43-settings-api-tokens.png" alt="API Tokens"></td>
+<td width="50%"><img src="arts/33-theme-api-token-empty.png" alt="API Token Empty State"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/31-settings-revoke-confirm.png" alt="Revoke Confirm"></td>
+<td width="50%"><img src="arts/32-settings-revoke-tokens.png" alt="Revoke Tokens"></td>
+</tr>
+</table>
+
+**Preferences & Localization**
+<table>
+<tr>
+<td width="50%"><img src="arts/38-settings-locale-timezone.png" alt="Language & Timezone"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+### Global Features
+
+**Search & Navigation**
+<table>
+<tr>
+<td width="50%"><img src="arts/17-global-search.png" alt="Global Search"></td>
+<td width="50%"><img src="arts/18-global-search-results.png" alt="Search Results"></td>
+</tr>
+<tr>
+<td width="50%"><img src="arts/15-user-menu.png" alt="User Menu"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+**Notifications**
+<table>
+<tr>
+<td width="50%"><img src="arts/13-notifications-panel-empty.png" alt="Notifications"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+### Modals & Dialogs
+<table>
+<tr>
+<td width="50%"><img src="arts/05-modal-delete-confirm.png" alt="Delete Confirmation"></td>
+<td width="50%"></td>
+</tr>
+</table>
+
 ## Documentation
 
 Complete technical documentation for all Laravilt packages:
