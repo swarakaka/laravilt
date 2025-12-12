@@ -26,25 +26,87 @@ A modern Laravel Admin Panel built with Vue 3, Inertia.js, and AI capabilities. 
 - **RTL Support**: Full right-to-left language support
 - **Dark Mode**: System-aware theming
 
+## Documentation
+
+Complete technical documentation for all Laravilt packages:
+
+### Getting Started
+- [Overview](docs/getting-started/README.md) - Introduction and package overview
+- [Installation](docs/getting-started/installation.md) - Complete installation guide
+- [Architecture](docs/getting-started/architecture.md) - System architecture and design
+- [Quick Start](docs/getting-started/quick-start.md) - Build your first resource
+
+### Core Packages
+- [Panel](docs/panel/introduction.md) - Admin panel framework
+  - [Creating Panels](docs/panel/creating-panels.md)
+  - [Resources](docs/panel/resources.md)
+  - [Pages](docs/panel/pages.md)
+  - [Navigation](docs/panel/navigation.md)
+  - [Themes](docs/panel/themes.md)
+
+- [Auth](docs/auth/introduction.md) - Authentication system
+  - [Auth Methods](docs/auth/methods.md)
+  - [Two-Factor Authentication](docs/auth/two-factor.md)
+  - [Social Login](docs/auth/social.md)
+  - [Passkeys](docs/auth/passkeys.md)
+  - [Profile Management](docs/auth/profile.md)
+
+- [Forms](docs/forms/introduction.md) - Form builder
+  - [Field Types](docs/forms/field-types.md) - 30+ field types
+  - [Validation](docs/forms/validation.md)
+  - [Layouts](docs/forms/layouts.md)
+  - [Reactive Fields](docs/forms/reactive-fields.md)
+  - [Custom Fields](docs/forms/custom-fields.md)
+
+- [Tables](docs/tables/introduction.md) - Table builder
+  - [Columns](docs/tables/columns.md) - 9 column types
+  - [Filters](docs/tables/filters.md)
+  - [Actions](docs/tables/actions.md)
+  - [Table API](docs/tables/api.md) - REST API generation
+
+- [Actions](docs/actions/introduction.md) - Action system for CRUD operations
+
+### Supporting Packages
+- [Schemas](docs/schemas/introduction.md) - Layout components
+- [Infolists](docs/infolists/introduction.md) - Read-only data display
+- [Notifications](docs/notifications/introduction.md) - Toast and database notifications
+- [Widgets](docs/widgets/introduction.md) - Dashboard widgets and charts
+- [Query Builder](docs/query-builder/introduction.md) - Advanced query building
+- [Support](docs/support/introduction.md) - Core utilities and base components
+
+### Advanced Features
+- [AI Package](docs/ai/introduction.md) - AI integration
+  - Multi-provider support (OpenAI, Anthropic, Gemini, DeepSeek, Perplexity)
+  - Real-time streaming
+  - Tool calling and function execution
+  - Global search with AI
+  - Chat interface with session management
+
+- [Plugins](docs/plugins/introduction.md) - Plugin system
+  - Creating plugins
+  - Plugin components
+  - Auto-discovery
+  - MCP integration for AI-assisted development
+
 ## Included Packages
 
 This meta-package includes all Laravilt components:
 
-| Package | Description |
-|---------|-------------|
-| `laravilt/support` | Core utilities and helpers |
-| `laravilt/panel` | Admin panel core framework |
-| `laravilt/auth` | Authentication system |
-| `laravilt/forms` | Form builder with 30+ fields |
-| `laravilt/tables` | Table builder with actions |
-| `laravilt/actions` | Action system for CRUD |
-| `laravilt/schemas` | Schema definitions |
-| `laravilt/infolists` | Information display lists |
-| `laravilt/notifications` | Notification system |
-| `laravilt/widgets` | Dashboard widgets |
-| `laravilt/query-builder` | Query building utilities |
-| `laravilt/ai` | AI assistant integration |
-| `laravilt/plugins` | Plugin system & generators |
+| Package | Description | Documentation |
+|---------|-------------|---------------|
+| `laravilt/support` | Core utilities and helpers | [Docs](docs/support/introduction.md) |
+| `laravilt/panel` | Admin panel core framework | [Docs](docs/panel/introduction.md) |
+| `laravilt/auth` | Authentication system | [Docs](docs/auth/introduction.md) |
+| `laravilt/forms` | Form builder with 30+ fields | [Docs](docs/forms/introduction.md) |
+| `laravilt/tables` | Table builder with actions | [Docs](docs/tables/introduction.md) |
+| `laravilt/actions` | Action system for CRUD | [Docs](docs/actions/introduction.md) |
+| `laravilt/schemas` | Schema definitions | [Docs](docs/schemas/introduction.md) |
+| `laravilt/infolists` | Information display lists | [Docs](docs/infolists/introduction.md) |
+| `laravilt/notifications` | Notification system | [Docs](docs/notifications/introduction.md) |
+| `laravilt/widgets` | Dashboard widgets | [Docs](docs/widgets/introduction.md) |
+| `laravilt/query-builder` | Query building utilities | [Docs](docs/query-builder/introduction.md) |
+| `laravilt/ai` | AI assistant integration | [Docs](docs/ai/introduction.md) |
+| `laravilt/plugins` | Plugin system & generators | [Docs](docs/plugins/introduction.md) |
 
 ## Requirements
 
