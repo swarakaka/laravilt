@@ -1,4 +1,4 @@
-![laravilt](https://raw.githubusercontent.com/laravilt/laravilt/master/arts/screenshot.jpg)
+![laravilt](https://raw.githubusercontent.com/laravilt/laravilt/master/arts/hero.jpg)
 
 # Laravilt
 
@@ -66,7 +66,7 @@ A modern Laravel Admin Panel built with Vue 3, Inertia.js, and AI capabilities. 
 </tr>
 </table>
 
-### Customers Management
+### Grid Simple Card
 <table>
 <tr>
 <td width="50%"><img src="arts/07-customers-grid-view.png" alt="Customers Grid"></td>
