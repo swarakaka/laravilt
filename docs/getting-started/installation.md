@@ -54,23 +54,7 @@ Navigate to your project:
 cd my-admin-panel
 ```
 
-## Step 2: Install Vue.js Starter Kit
-
-Laravilt uses Inertia.js v2 with Vue 3. Install the Laravel Breeze Vue stack:
-
-```bash
-composer require laravel/breeze --dev
-
-php artisan breeze:install vue --typescript --ssr
-```
-
-This installs:
-- Vue 3 with TypeScript
-- Inertia.js v2
-- Tailwind CSS v4
-- Vite build system
-
-## Step 3: Install Laravilt
+## Step 2: Install Laravilt
 
 Add Laravilt to your project:
 
