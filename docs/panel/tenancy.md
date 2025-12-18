@@ -2,6 +2,269 @@
 
 Laravilt Panel provides built-in support for multi-tenancy, allowing you to build SaaS applications with either a shared database or isolated databases per tenant.
 
+## Installation
+
+### Step 1: Publish Configuration
+
+```bash
+php artisan vendor:publish --tag=laravilt-tenancy-config
+```
+
+This creates `config/laravilt-tenancy.php` with all tenancy settings.
+
+### Step 2: Publish Migrations
+
+```bash
+php artisan vendor:publish --tag=laravilt-tenancy-migrations
+```
+
+This publishes the following migrations to your `database/migrations/` folder:
+- `create_tenants_table.php` - Main tenants table
+- `create_domains_table.php` - Domain/subdomain mapping
+- `create_tenant_users_table.php` - Tenant-user pivot table
+
+### Step 3: Run Migrations
+
+```bash
+php artisan migrate
+```
+
+### Step 4: Configure Your Panel
+
+See the [Configuration](#configuration) section below for panel setup.
+
+---
+
+## Using Teams as Tenants
+
+If you already have a `Team` model (e.g., from Laravel Jetstream), you can use it as your tenant model instead of creating a new one.
+
+### Quick Start: Publish Teams Scaffolding
+
+If you want to use Teams as tenants, you can publish ready-made scaffolding:
+
+```bash
+# Publish teams migration
+php artisan vendor:publish --tag=laravilt-teams-migration
+
+# Publish Team model
+php artisan vendor:publish --tag=laravilt-teams-model
+
+# Publish HasTeams trait (for User model)
+php artisan vendor:publish --tag=laravilt-teams-trait
+
+# Run migration
+php artisan migrate
+```
+
+This will create:
+- `database/migrations/xxxx_create_teams_table.php` - Teams table migration
+- `app/Models/Team.php` - Team model with tenancy support
+- `app/Concerns/HasTeams.php` - Trait for User model
+
+Then add the trait to your User model:
+
+```php
+// app/Models/User.php
+use App\Concerns\HasTeams;
+
+class User extends Authenticatable
+{
+    use HasTeams;
+    // ...
+}
+```
+
+### Option A: Use Existing Team Model (Single Database)
+
+For single-database tenancy where teams share the same database:
+
+```php
+// app/Providers/Laravilt/AdminPanelProvider.php
+use App\Models\Team;
+
+Panel::make('admin')
+    ->path('admin')
+    ->tenant(Team::class, 'team', 'slug');
+```
+
+**Required:** Add the `HasTenantName` interface to your Team model:
+
+```php
+// app/Models/Team.php
+namespace App\Models;
+
+use Laravilt\Panel\Contracts\HasTenantName;
+use Illuminate\Database\Eloquent\Model;
+
+class Team extends Model implements HasTenantName
+{
+    public function getTenantName(): string
+    {
+        return $this->name;
+    }
+
+    // Optional: Add avatar support
+    public function getTenantAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
+    }
+}
+```
+
+### Option B: Extend Team for Multi-Database Tenancy
+
+For multi-database tenancy, your Team model needs additional fields:
+
+**Step 1: Add columns to your existing teams table:**
+
+```bash
+php artisan make:migration add_tenancy_columns_to_teams_table
+```
+
+```php
+// database/migrations/xxxx_add_tenancy_columns_to_teams_table.php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('teams', function (Blueprint $table) {
+            $table->string('slug')->unique()->after('name');
+            $table->string('database')->nullable()->after('slug');
+            $table->json('data')->nullable();
+            $table->json('settings')->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('teams', function (Blueprint $table) {
+            $table->dropColumn(['slug', 'database', 'data', 'settings', 'trial_ends_at']);
+        });
+    }
+};
+```
+
+**Step 2: Run the migration:**
+
+```bash
+php artisan migrate
+```
+
+**Step 3: Update your Team model:**
+
+```php
+// app/Models/Team.php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Laravilt\Panel\Contracts\HasTenantName;
+use Laravilt\Panel\Contracts\HasTenantAvatar;
+
+class Team extends Model implements HasTenantName, HasTenantAvatar
+{
+    protected $fillable = [
+        'name',
+        'slug',
+        'database',
+        'data',
+        'settings',
+        'trial_ends_at',
+        // ... your existing fields
+    ];
+
+    protected $casts = [
+        'data' => 'array',
+        'settings' => 'array',
+        'trial_ends_at' => 'datetime',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($team) {
+            // Auto-generate slug from name
+            if (empty($team->slug) && !empty($team->name)) {
+                $team->slug = Str::slug($team->name);
+            }
+
+            // Auto-generate database name for multi-database mode
+            if (empty($team->database)) {
+                $prefix = config('laravilt-tenancy.tenant.database_prefix', 'tenant_');
+                $team->database = $prefix . $team->slug;
+            }
+        });
+    }
+
+    // Required by HasTenantName interface
+    public function getTenantName(): string
+    {
+        return $this->name;
+    }
+
+    // Required by HasTenantAvatar interface
+    public function getTenantAvatarUrl(): ?string
+    {
+        return $this->avatar_url ?? null;
+    }
+
+    // Useful helper methods
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        return data_get($this->settings, $key, $default);
+    }
+
+    public function setSetting(string $key, mixed $value): void
+    {
+        $settings = $this->settings ?? [];
+        data_set($settings, $key, $value);
+        $this->settings = $settings;
+        $this->save();
+    }
+}
+```
+
+**Step 4: Configure your panel:**
+
+```php
+// app/Providers/Laravilt/AdminPanelProvider.php
+use App\Models\Team;
+
+Panel::make('admin')
+    ->path('admin')
+    ->multiDatabaseTenancy(Team::class, 'myapp.com');
+```
+
+### Option C: Use Built-in Tenant Model
+
+If you don't have an existing Team model, use Laravilt's built-in `Tenant` model:
+
+```bash
+# Publish migrations
+php artisan vendor:publish --tag=laravilt-tenancy-migrations
+
+# Run migrations
+php artisan migrate
+```
+
+```php
+// app/Providers/Laravilt/AdminPanelProvider.php
+use Laravilt\Panel\Models\Tenant;
+
+Panel::make('admin')
+    ->path('admin')
+    ->multiDatabaseTenancy(Tenant::class, 'myapp.com');
+```
+
+---
+
 ## Overview
 
 Laravilt supports two tenancy modes:
