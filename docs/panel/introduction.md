@@ -231,8 +231,10 @@ php artisan vendor:publish --tag=laravilt-panel-lang
 
 ## Next Steps
 
+- [Migrating from Filament](migration.md) - Migrate existing Filament PHP projects
 - [Creating Panels](creating-panels.md) - Create and configure panels
 - [Resources](resources.md) - Build CRUD resources
 - [Pages](pages.md) - Create custom pages
 - [Navigation](navigation.md) - Customize navigation
 - [Themes & Branding](themes.md) - Style your panel
+- [Multi-Tenancy](tenancy.md) - Build SaaS applications
