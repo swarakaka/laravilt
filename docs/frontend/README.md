@@ -1,64 +1,151 @@
 ---
-title: Frontend Documentation
-description: Vue 3 components and frontend architecture for Laravilt admin panels.
+title: Frontend
+description: Vue 3 components and frontend architecture
+version: 1.0.0
+laravel: "12.x"
+php: "8.2+"
+updated: 2025-01-15
+category: frontend
 ---
 
 # Frontend Documentation
 
-Laravilt's frontend is built with Vue 3, TypeScript, and Inertia.js. This documentation covers the Vue components, utilities, and patterns used in the admin panel.
+Vue 3 components for building admin panels with Laravilt.
 
 ## Technology Stack
 
-- **Vue 3** - Composition API with `<script setup>` syntax
-- **TypeScript** - Full type safety across the frontend
-- **Inertia.js** - SPA-like experience without API complexity
-- **Tailwind CSS** - Utility-first styling
-- **Reka UI** - Accessible Vue component primitives
-- **Lucide Icons** - Beautiful icon set
+| Technology | Description |
+|------------|-------------|
+| Vue 3 | Composition API with `<script setup>` |
+| TypeScript | Full type safety |
+| Inertia.js v2 | SPA-like experience |
+| Tailwind CSS | Utility-first styling |
+| Reka UI | Accessible primitives |
+| Lucide Icons | Icon library |
 
-## Directory Structure
+## Installation
 
-```
-resources/js/
-├── components/          # Reusable Vue components
-│   ├── laravilt/       # Laravilt-specific components
-│   └── ui/             # Base UI components (Reka UI)
-├── composables/        # Vue composables (hooks)
-├── layouts/            # Page layouts
-├── lib/                # Utilities (utils.ts)
-├── pages/              # Inertia pages
-│   ├── laravilt/       # Admin panel pages
-│   └── Landing/        # Public landing pages
-└── types/              # TypeScript interfaces
+```bash
+npm install @laravilt/support @laravilt/schemas
 ```
 
-## Key Components
+---
 
-### Navigation Components
+## Documentation
 
-- **NavMain.vue** - Sidebar navigation with groups, badges, and active state detection
-- **NavUser.vue** - User dropdown menu
-- **NavFooter.vue** - Sidebar footer content
-- **AppHeader.vue** - Top header with global search
+### [UI Components](ui/introduction)
 
-### UI Components
+Standalone UI components for any Vue project.
 
-Located in `components/ui/`:
+| Component | Description |
+|-----------|-------------|
+| [Button](ui/button) | Button variants and sizes |
+| [Dialog](ui/dialog) | Modal dialogs |
+| [Sheet](ui/sheet) | Slide-out panels |
+| [Card](ui/card) | Content cards |
+| [Badge](ui/badge) | Status badges |
+| [Alert](ui/alert) | Alert messages |
+| [Avatar](ui/avatar) | User avatars |
+| [Dropdown](ui/dropdown) | Dropdown menus |
+| [Tabs](ui/tabs) | Tab navigation |
+| [Tooltip](ui/tooltip) | Hover tooltips |
 
-- **sidebar/** - Collapsible sidebar with group support
-- **dialog/** - Modal dialogs
-- **dropdown-menu/** - Context menus
-- **button/** - Button variants
-- **input/** - Form inputs
-- **select/** - Dropdown selects
-- **badge/** - Status badges
-- **card/** - Content cards
-- **tabs/** - Tab navigation
+### [Form Components](forms/introduction)
 
-## Quick Links
+Form input components with validation.
 
-- [Components](/docs/frontend/components)
-- [Utilities](/docs/frontend/utilities)
-- [Layouts](/docs/frontend/layouts)
-- [Styling](/docs/frontend/styling)
-- [TypeScript Types](/docs/frontend/types)
+| Component | Description |
+|-----------|-------------|
+| [Input](forms/input) | Text inputs |
+| [Select](forms/select) | Select dropdowns |
+| [Checkbox](forms/checkbox) | Checkboxes |
+| [Switch](forms/switch) | Toggle switches |
+
+### [Chart Components](charts/introduction)
+
+Dashboard chart components.
+
+| Component | Description |
+|-----------|-------------|
+| LineChart | Line/area charts |
+| BarChart | Bar charts |
+| PieChart | Pie/doughnut charts |
+| StatsCard | Statistics cards |
+
+---
+
+## Quick Start
+
+### Import Components
+
+```typescript
+// UI Components
+import { Button, Dialog, Card, Badge } from '@laravilt/support'
+
+// Form Components
+import { Input, Select, Checkbox, Switch } from '@laravilt/support'
+
+// Chart Components
+import { LineChart, BarChart, StatsCard } from '@laravilt/schemas'
+```
+
+### Example Page
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Card, CardHeader, CardTitle, CardContent } from '@laravilt/support'
+import { Button } from '@laravilt/support'
+import { Input, Label } from '@laravilt/support'
+
+const name = ref('')
+</script>
+
+<template>
+    <Card>
+        <CardHeader>
+            <CardTitle>Create User</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <form class="space-y-4">
+                <div class="grid gap-2">
+                    <Label>Name</Label>
+                    <Input v-model="name" placeholder="Enter name" />
+                </div>
+                <Button type="submit">Create</Button>
+            </form>
+        </CardContent>
+    </Card>
+</template>
+```
+
+---
+
+## Vue Package Mapping
+
+| PHP Package | Vue Package |
+|-------------|-------------|
+| `laravilt/forms` | `@laravilt/forms` |
+| `laravilt/tables` | `@laravilt/tables` |
+| `laravilt/schemas` | `@laravilt/schemas` |
+| `laravilt/widgets` | `@laravilt/widgets` |
+| `laravilt/infolists` | `@laravilt/infolists` |
+| `laravilt/notifications` | `@laravilt/notifications` |
+| `laravilt/actions` | `@laravilt/actions` |
+| `laravilt/support` | `@laravilt/support` |
+
+---
+
+## Related Documentation
+
+- [Introduction](introduction) - Frontend overview
+- [Styling](styling) - Tailwind CSS configuration
+- [Layouts](layouts) - Page layouts
+- [Utilities](utilities) - Helper functions
+- [App Components](components) - Application components (NavMain, Page, Form, Table)
+
+## Support
+
+- [Discord Community](https://discord.gg/gyRhbVUXEZ)
+- [GitHub Issues](https://github.com/laravilt/laravilt/issues)
+
